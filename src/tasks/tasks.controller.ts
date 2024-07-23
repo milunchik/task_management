@@ -9,7 +9,6 @@ import {
   Patch,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-import { TaskStatus } from './tasks.status.enum';
 import { CreateTaskDto } from './dto/create-task-dto';
 import { GetTaskFilterDto } from './dto/get-task-dto';
 import { UpdateTaskStatusDto } from './dto/update-task-dto';
