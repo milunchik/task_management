@@ -33,20 +33,28 @@ export class TasksService {
       );
     }
 
-    const tasks = await query.getMany();
-    return tasks;
+    try {
+      const tasks = await query.getMany();
+      return tasks;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async getTaskById(id: string, user: User): Promise<Task> {
-    const found = await this.tasksRepository.findOne({
-      where: { id, user },
-    });
+    try {
+      const found = await this.tasksRepository.findOne({
+        where: { id, user },
+      });
 
-    if (!found) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
+      if (!found) {
+        throw new NotFoundException(`Task with ID "${id}" not found`);
+      }
+
+      return found;
+    } catch (error) {
+      console.log(error);
     }
-
-    return found;
   }
 
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
@@ -58,20 +66,29 @@ export class TasksService {
       status: TaskStatus.OPEN,
       user,
     });
-    await this.tasksRepository.save(task);
-    return task;
+
+    try {
+      await this.tasksRepository.save(task);
+      return task;
+    } catch (error) {
+      console.log('Falied to create ', error);
+    }
   }
 
   async deleteTask(id: string, user: User): Promise<void> {
-    const found = await this.tasksRepository.findOne({
-      where: { id, user },
-    });
+    try {
+      const found = await this.tasksRepository.findOne({
+        where: { id, user },
+      });
 
-    if (!found) {
-      throw new NotFoundException(`Task with ID "${id}" not found`);
+      if (!found) {
+        throw new NotFoundException(`Task with ID "${id}" not found`);
+      }
+
+      await this.tasksRepository.delete(found.id);
+    } catch (error) {
+      console.log(error);
     }
-
-    await this.tasksRepository.delete(found.id);
   }
 
   async updateTaskStatus(
@@ -79,10 +96,14 @@ export class TasksService {
     status: TaskStatus,
     user: User,
   ): Promise<Task> {
-    const task = await this.getTaskById(id, user);
+    try {
+      const task = await this.getTaskById(id, user);
 
-    task.status = status;
-    await this.tasksRepository.save(task);
-    return task;
+      task.status = status;
+      await this.tasksRepository.save(task);
+      return task;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
