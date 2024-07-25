@@ -15,7 +15,7 @@ export class TasksService {
   ) {}
 
   async getTasks(filterDto: GetTaskFilterDto, user: User): Promise<Task[]> {
-    const { status, search } = filterDto;
+    const { status, search } = filterDto || null;
     const query = this.tasksRepository.createQueryBuilder('task');
 
     query.where({ user });
@@ -41,7 +41,7 @@ export class TasksService {
     }
   }
 
-  async getTaskById(id: string, user: User): Promise<Task> {
+  async getTaskById(id: string, user: User): Promise<Task | any> {
     try {
       const found = await this.tasksRepository.findOne({
         where: { id, user },
